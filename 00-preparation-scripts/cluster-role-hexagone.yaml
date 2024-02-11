@@ -1,0 +1,21 @@
+#
+# this cluster role is to allow students to manipulate cluster-wide
+# resources
+#
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: hexagone
+rules:
+- apiGroups: [""]
+  resources: ["nodes", "persistentvolumes"]
+  verbs: ["get", "watch", "list"]
+- apiGroups: ["networking.k8s.io"]
+  resources: ["ingressclasses"]
+  verbs: ["get", "watch", "list"]
+- apiGroups: ["storage.k8s.io"]
+  resources: ["storageclasses", "csidrivers", "csinodes"]
+  verbs: ["get", "watch", "list"]
+- apiGroups: ["metrics.k8s.io"]
+  resources: ["nodes", "pods"]
+  verbs: ["get", "watch", "list"]

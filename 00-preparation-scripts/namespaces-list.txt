@@ -1,0 +1,15 @@
+#
+# list of namespaces to create: one namespace per line
+# ----------------------------------------------------
+mickael
+augustin
+florian
+jonah
+alexandre
+omar
+theo
+matthieu
+valentin
+corentin
+mathieu
+kenny
