@@ -1,0 +1,106 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  labels:
+    application: bank-of-anthos
+    component: frontend
+spec:
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+  selector:
+    application: bank-of-anthos
+    component: frontend
+  type: ClusterIP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    application: bank-of-anthos
+    component: frontend
+spec:
+  selector:
+    matchLabels:
+      application: bank-of-anthos
+      component: frontend
+  template:
+    metadata:
+      labels:
+        application: bank-of-anthos
+        component: frontend
+    spec:
+      containers:
+      - name: front
+        image: mdimonte/frontend:v0.6.3
+        env:
+        - name: VERSION
+          value: v0.6.3
+        - name: PORT
+          value: "8080"
+        - name: ENABLE_TRACING
+          value: "true"
+        - name: SCHEME
+          value: http
+        - name: LOG_LEVEL
+          value: info
+        - name: DEFAULT_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              key: DEMO_LOGIN_USERNAME
+              name: demo-data-config
+        - name: DEFAULT_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: DEMO_LOGIN_PASSWORD
+              name: demo-data-config
+        envFrom:
+        - configMapRef:
+            name: environment-config
+        - configMapRef:
+            name: service-api-config
+        livenessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 15
+          timeoutSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 10
+        resources:
+          limits:
+            cpu: 250m
+            memory: 128Mi
+          requests:
+            cpu: 100m
+            memory: 64Mi
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp
+        - mountPath: /tmp/.ssh
+          name: publickey
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      terminationGracePeriodSeconds: 5
+      volumes:
+      - emptyDir: {}
+        name: tmp
+      - name: publickey
+        secret:
+          secretName: jwt-key
+          items:
+          - key: jwtRS256.key.pub
+            path: publickey
