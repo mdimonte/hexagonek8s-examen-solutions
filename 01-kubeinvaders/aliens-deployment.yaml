@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aliens
+  labels:
+    app: nginx
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: aliens
+  template:
+    metadata:
+      labels:
+        app: aliens
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: "5m"
+            memory: "25Mi"
+          limits:
+            cpu: "20m"
+            memory: "75Mi"

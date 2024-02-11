@@ -1,20 +1,19 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: kubeinvaders
+  name: aliens
   labels:
-    app: kubeinvaders
+    app: aliens
 spec:
   ingressClassName: webapprouting.kubernetes.azure.com
   rules:
-  - host: kubeinvaders.mickael.calpeabyla.com
+  - host: aliens.mickael.calpeabyla.com
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: kubeinvaders
+            name: aliens
             port:
               number: 8080
-
