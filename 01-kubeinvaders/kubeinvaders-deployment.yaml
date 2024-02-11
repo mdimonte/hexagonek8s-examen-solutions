@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubeinvaders
+  labels:
+    app: kubeinvaders
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kubeinvaders
+  template:
+    metadata:
+      labels:
+        app: kubeinvaders
+    spec:
+      containers:
+      - env:
+        - name: ENDPOINT
+          value: kubeinvaders.mickael.calpeabyla.com
+        - name: NAMESPACE
+          value: mickael
+        name: kubeinvaders
+        image: "mdimonte/kubeinvaders:v1.9"
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        resources:
+          requests:
+            cpu: "5m"
+            memory: "25Mi"
+          limits:
+            cpu: "20m"
+            memory: "75Mi"
